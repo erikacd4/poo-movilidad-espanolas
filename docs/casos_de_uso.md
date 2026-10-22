@@ -199,8 +199,8 @@ La persona que presenta el reporte está registrada como usuario o como operador
 3. El actor identifica el vehículo e ingresa la descripción.
 4. El sistema comprueba que el vehículo exista y que la descripción esté completa.
 5. El sistema registra el reporte asociado al vehículo, con su descripción y fecha.
-6. El sistema comprueba la cantidad de reportes de falla del vehículo en los últimos 30 días.
-7. Si el vehículo acumula al menos 3 reportes en los últimos 30 días, el sistema registra que requiere mantenimiento obligatorio e impide nuevos retiros mientras esa condición esté pendiente.
+6. El sistema consulta los reportes del vehículo registrados en los últimos 30 días y distingue cuáles fueron atendidos.
+7. Si existen al menos 3 reportes pendientes de atención en ese período, el sistema registra la obligación de mantenimiento. Si esa obligación ya estaba pendiente, la mantiene hasta que se registre su resolución. Mientras esté pendiente, impide nuevos retiros.
 8. El sistema informa que el reporte se registró correctamente.
 
 ### Flujos alternativos
@@ -466,12 +466,14 @@ El operador está registrado en el sistema.
 
 ### Flujo principal
 
+### Flujo principal
+
 1. El operador solicita comprobar los viajes abiertos.
 2. El sistema compara el momento actual con el inicio de cada viaje abierto.
-3. Si un vehículo lleva 24 horas o más sin devolverse, el sistema registra que fue reportado como perdido e impide que se ofrezca para nuevos retiros.
-4. El sistema aplica el cargo fijo de $50.000 a la cuenta del usuario y registra el movimiento con su fecha, importe y viaje asociado.
-5. El sistema registra que el cargo por pérdida ya fue aplicado, para evitar cobrarlo nuevamente en otra comprobación.
-6. Si el saldo resulta negativo, el sistema inhabilita al usuario hasta que lo regularice.
+3. Para cada viaje que alcanza las 24 horas sin devolución, el sistema registra el vehículo como reportado perdido e impide que se ofrezca para nuevos retiros.
+4. Si ese viaje todavía no tiene aplicado el cargo por pérdida,el sistema debita $50.000 de la cuenta del usuario y registra el movimiento con su fecha, importe y viaje asociado.
+5. El sistema registra que el cargo por pérdida fue aplicado, para evitar repetirlo en otras comprobaciones.
+6. Si se aplicó el cargo y el saldo resulta negativo, el sistema inhabilita al usuario hasta que lo regularice.
 7. El sistema muestra los vehículos reportados como perdidos.
 
 ### Flujos alternativos
