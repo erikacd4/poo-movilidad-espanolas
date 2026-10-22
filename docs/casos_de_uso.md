@@ -481,8 +481,6 @@ El operador está registrado en el sistema.
 
 ### Flujo principal
 
-### Flujo principal
-
 1. El operador solicita comprobar los viajes abiertos.
 2. El sistema compara el momento actual con el inicio de cada viaje abierto.
 3. Para cada viaje que alcanza las 24 horas sin devolución, el sistema registra el vehículo como reportado perdido e impide que se ofrezca para nuevos retiros.
