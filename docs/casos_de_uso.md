@@ -79,7 +79,7 @@ El usuario tiene un viaje abierto con el vehículo que desea devolver.
 1. El usuario solicita devolver el vehículo en una estación.
 2. El sistema verifica que la estación tenga capacidad disponible.
 3. El sistema registra la estación de devolución, el momento de fin y la distancia recorrida del viaje.
-4. El sistema calcula el importe aplicando el procedimiento descrito en el apartado Cálculo del importe del viaje.
+4. El sistema calcula el importe mediante el caso de uso Calcular importe del viaje.
 5. El sistema descuenta el importe de la cuenta del usuario y registra el movimiento con su fecha e importe.
 6. El sistema cierra el viaje y registra el vehículo en la estación.
 7. El sistema registra el beneficio utilizado. Si aplicó el plan mensual, descuenta uno de los viajes disponibles. Si es el primer viaje finalizado no cancelado, registra que ese primer viaje ya se realizó.
@@ -94,7 +94,17 @@ El usuario tiene un viaje abierto con el vehículo que desea devolver.
 - Si intenta devolver el vehículo fuera de una estación, el sistema rechaza la devolución y mantiene el viaje abierto.
 - Si el saldo resulta negativo después del cobro, el sistema inhabilita al usuario hasta que lo regularice. La devolución y el cierre del viaje se completan.
 
-### Cálculo del importe del viaje
+## Calcular importe del viaje
+
+### Actor participante
+
+Usuario, mediante el caso Devolver un vehículo.
+
+### Precondición
+
+Se conocen los momentos de inicio y fin del viaje y la tarifa asociada al retiro.
+
+### Flujo principal
 
 1. El sistema determina la duración del viaje a partir de sus momentos de inicio y fin.
 2. El sistema utiliza la tarifa asociada al viaje al momento del retiro, con su cargo de desbloqueo y precio por minuto.
@@ -106,6 +116,11 @@ El usuario tiene un viaje abierto con el vehículo que desea devolver.
 8. El sistema selecciona la opción más favorable para el usuario, sin acumular promociones, y registra el importe y la promoción aplicada, si corresponde.
 
 Los minutos gratuitos de las promociones corresponden al comienzo del viaje. Si coinciden con el período gratuito por estación llena, ese tiempo no se descuenta dos veces. El recargo del 50 % se aplica únicamente al tiempo cobrable posterior a las 2 horas desde el inicio.
+
+### Flujos alternativos
+
+- Si no corresponde ninguna promoción, el sistema utiliza el importe calculado sin promociones.
+- Si el viaje queda completamente cubierto por una promoción, el importe resultante es cero.
 
 ## Asociar un medio de pago
 
