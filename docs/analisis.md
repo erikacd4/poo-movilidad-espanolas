@@ -85,6 +85,9 @@ Consideramos que el técnico asignado a una orden es quien registra las tareas r
 Consideramos que las promociones del primer viaje y del plan mensual contienen el cargo de desbloqueo y los minutos gratuitos correspondientes: 15 minutos para el primer viaje y 30 minutos para cada uno de los 20 viajes incluidos en el plan mensual. 
 Si el viaje supera ese tiempo, se cobran únicamente los minutos excedentes según la tarifa vigente, con los recargos que correspondan.
 Las promociones no se acumulan: se aplica la más favorable para el usuario.
+Los minutos gratuitos de las promociones corresponden al comienzo del viaje. Si coinciden con el período gratuito
+por estación llena, ese tiempo no se descuenta dos veces. El recargo del 50 % se aplica únicamente al tiempo cobrable
+posterior a las 2 horas desde el inicio.
 
 ### Cobro de fracciones de minuto
 Consideramos que las fracciones de minuto se cobran proporcionalmente al tiempo utilizado. Para calcular el importe, expresamos el tiempo cobrable en minutos, incluyendo su parte decimal, y aplicamos el precio por minuto correspondiente. 
@@ -117,3 +120,61 @@ La promoción del primer viaje corresponde al primer viaje finalizado que no hay
 Se descuenta un viaje del plan mensual únicamente cuando se aplica ese beneficio al finalizar el viaje.
 
 Si la promoción del primer viaje y la del plan mensual producen el mismo importe, se aplica la del primer viaje, conservando los viajes disponibles del plan. 
+
+### Comprobación de vehículos no devueltos
+
+Consideramos que el operador solicita la comprobación de los viajes abiertos. Al cumplirse 24 horas sin devolución, se registra la pérdida y se aplica una única vez el cargo fijo por ese viaje.
+
+La pérdida se registra como una condición del vehículo, sin añadir un nuevo estado a la lista del enunciado.
+
+### Ajustes económicos
+
+Consideramos que una nota de ajuste económica genera un movimiento compensatorio que acredita o debita la cuenta.
+El viaje y sus movimientos originales se conservan.
+
+### Resolución del mantenimiento obligatorio
+
+Consideramos que el técnico identifica qué reportes de falla quedaron atendidos al cerrar una orden. El historial se conserva.
+
+El mantenimiento obligatorio se considera cumplido cuando se resuelven las fallas que lo motivaron y no quedan otras
+pendientes que lo exijan. Los reportes ya atendidos no generan por sí solos una nueva obligación de mantenimiento.
+
+### Vigencia y disponibilidad del plan mensual
+
+Consideramos que cada usuario puede tener una única suscripción vigente. Su duración es de un mes desde el momento de inicio
+de la suscripción hasta el mismo día y hora del mes siguiente. Si ese día no existe, finaliza el último día de ese mes.
+
+Los viajes no utilizados no se acumulan. El plan se considera aplicable si estaba vigente al iniciar el viaje y tenía viajes
+disponibles. Su vencimiento durante ese viaje no elimina el beneficio.
+
+### Tiempo adicional por estación llena
+
+Consideramos que cada viaje puede recibir una única ampliación de hasta 10 minutos sin cargo por encontrar una estación llena.
+
+El período comienza cuando se registra el primer intento de devolución rechazado por falta de capacidad y termina
+al completar la devolución o al cumplirse los 10 minutos, lo que ocurra primero.
+
+Los intentos posteriores no reinician ni acumulan ese período gratuito.
+
+### Suministro de los puntos del recorrido
+
+Para el programa del trabajo práctico, consideramos que el usuario ingresa los puntos del recorrido con sus coordenadas
+y hora mientras el viaje está abierto. Estos datos permiten simular el registro del recorrido sin conectar dispositivos
+externos.
+
+### Actualización manual del estado de los vehículos
+ 
+Consideramos que el operador registra los cambios manuales de estado, respetando las reglas de negocio. El retiro,
+la devolución y la cancelación actualizan el estado como parte de sus respectivos procedimientos.
+
+### Reporte de uso por estación
+
+Consideramos que el uso se representa mediante la cantidad de retiros y devoluciones registrados, incluidos los de viajes
+cancelados. Una devolución rechazada no cuenta como devolución.
+
+Los traslados del operador se registran como redistribuciones y no se contabilizan como viajes.
+
+### Reporte de vehículos con más fallas
+
+Consideramos que el reporte utiliza todos los reportes de falla conservados, incluidos los atendidos, y ordena los vehículos
+de mayor a menor cantidad de reportes.
