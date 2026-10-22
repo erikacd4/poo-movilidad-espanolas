@@ -55,12 +55,14 @@ El usuario está registrado y el vehículo que solicita retirar se encuentra en 
 
 Después de iniciar el viaje y mientras permanezca abierto:
 
-1. El sistema recibe las coordenadas y la hora de un punto del recorrido.
+1. El usuario ingresa las coordenadas y la hora de un punto del recorrido.
 2. El sistema comprueba que el viaje continúe abierto y que estén presentes los datos del punto.
 3. El sistema registra el punto asociado al viaje.
-4. El procedimiento se repite por cada punto recibido.
+4. El procedimiento se repite por cada punto ingresado.
 
-Si faltan las coordenadas o la hora, el punto no se registra. Si el viaje ya está cerrado o cancelado, no se incorporan nuevos puntos a su recorrido.
+Si faltan las coordenadas o la hora, el sistema solicita completarlas antes de registrar el punto.
+
+Si el viaje ya está cerrado o cancelado, el sistema no permite incorporar nuevos puntos.
 
 ## Devolver un vehículo
 
@@ -81,12 +83,14 @@ El usuario tiene un viaje abierto con el vehículo que desea devolver.
 5. El sistema descuenta el importe de la cuenta del usuario y registra el movimiento con su fecha e importe.
 6. El sistema cierra el viaje y registra el vehículo en la estación.
 7. El sistema registra el beneficio utilizado. Si aplicó el plan mensual, descuenta uno de los viajes disponibles. Si es el primer viaje finalizado no cancelado, registra que ese primer viaje ya se realizó.
-8. El sistema actualiza la ocupación de la estación. Si es menor al 20% o mayor al 90%, genera una alerta de redistribución para el operador.
-9. El sistema informa la finalización del viaje, el importe y el saldo resultante.
+8. El sistema actualiza el estado del vehículo según su condición. Si es eléctrico y su batería es menor al 15%, queda en batería baja. Si tiene mantenimiento obligatorio pendiente, no queda disponible para nuevos retiros.
+9. El sistema actualiza la ocupación de la estación. Si es menor al 20% o mayor al 90%, genera una alerta de redistribución para el operador.
+10. El sistema informa la finalización del viaje, el importe y el saldo resultante.
 
 ### Flujos alternativos
 
-- Si la estación está llena, el sistema no completa la devolución ni cierra el viaje. Registra la situación y concede 10 minutos adicionales sin cargo para llegar a otra estación cercana. El usuario debe solicitar nuevamente la devolución.
+- Si la estación está llena, el sistema no completa la devolución ni cierra el viaje. En el primer intento rechazado por este motivo,
+  registra el inicio del único período adicional de hasta 10 minutos sin cargo. El usuario debe dirigirse a otra estación cercana y solicitar nuevamente la devolución.
 - Si intenta devolver el vehículo fuera de una estación, el sistema rechaza la devolución y mantiene el viaje abierto.
 - Si el saldo resulta negativo después del cobro, el sistema inhabilita al usuario hasta que lo regularice. La devolución y el cierre del viaje se completan.
 
@@ -97,9 +101,11 @@ El usuario tiene un viaje abierto con el vehículo que desea devolver.
 3. El sistema identifica los períodos sin cargo que correspondan por una devolución rechazada debido a una estación llena.
 4. El sistema calcula el importe sin promociones: cargo de desbloqueo más tiempo cobrable al precio por minuto. Las fracciones de minuto se cobran proporcionalmente.
 5. Para el tiempo posterior a las 2 horas desde el inicio, el precio por minuto lleva un recargo del 50%. Los períodos sin cargo no se cobran.
-6. El sistema comprueba si corresponde la promoción del primer viaje y si el usuario tiene un plan mensual vigente con viajes disponibles.
+6. El sistema comprueba si corresponde la promoción del primer viaje y si, al iniciar el viaje, el usuario tenía un plan mensual vigente con viajes disponibles.
 7. El sistema calcula el importe con cada promoción aplicable, respetando los minutos incluidos y el supuesto de cobro de excedentes.
-8. El sistema selecciona la opción más favorable para el usuario, sin acumular promociones, y registrar el importe y la promoción aplicada, si corresponde.
+8. El sistema selecciona la opción más favorable para el usuario, sin acumular promociones, y registra el importe y la promoción aplicada, si corresponde.
+
+Los minutos gratuitos de las promociones corresponden al comienzo del viaje. Si coinciden con el período gratuito por estación llena, ese tiempo no se descuenta dos veces. El recargo del 50 % se aplica únicamente al tiempo cobrable posterior a las 2 horas desde el inicio.
 
 ## Asociar un medio de pago
 
@@ -247,13 +253,16 @@ El técnico y la orden de mantenimiento están registrados en el sistema.
 5. El técnico solicita cerrar la orden.
 6. El sistema comprueba que estén registrados el técnico responsable y las tareas realizadas.
 7. El sistema registra la fecha de cierre y marca la orden como cerrada.
-8. El sistema informa que la orden se cerró correctamente.
+8. El sistema registra como atendidos los reportes de falla cuya resolución confirma el técnico, conservando su historial.
+9. Si se resolvieron las fallas que motivaron el mantenimiento obligatorio y no quedan otras pendientes que lo exijan, el sistema registra que esa obligación fue atendida.
+10. El sistema informa que la orden se cerró correctamente. El vehículo no pasa automáticamente a disponible: debe cumplir las condiciones de disponibilidad.
 
 ### Flujos alternativos
 
 - Si la orden ya está cerrada, el sistema informa la situación y no permite cerrarla nuevamente.
 - Si la orden no está asignada al técnico, el sistema no permite que registre el trabajo ni efectúe el cierre.
 - Si faltan las tareas realizadas, el sistema solicita completarlas y mantiene la orden abierta.
+- Si el trabajo registrado no resuelve todas las fallas que requieren mantenimiento obligatorio, el vehículo continúa bloqueado para nuevos retiros.
 
 ## Redistribuir vehículos entre estaciones
 
@@ -278,7 +287,7 @@ Las estaciones de origen y destino están registradas y existen vehículos en la
 
 ### Flujos alternativos
 
-- Si la estacion de origen coincide con la de destino, el sistema solicita seleccionar otra estación de destino.
+- Si la estación de origen coincide con la de destino, el sistema solicita seleccionar otra estación de destino.
 - Si alguno de los vehículos no se encuentra en la estación de origen, el sistema informa la situación y solicita corregir la selección antes de registrar el traslado.
 - Si la estación de destino no tiene capacidad suficiente, el sistema no registra el traslado y solicita modificar el destino o la cantidad de vehículos.
 - Si no se seleccionan vehículos, el sistema solicita seleccionar al menos uno antes de registrar el traslado.
@@ -312,7 +321,7 @@ Consideramos que cada usuario puede tener una única suscripción vigente al pla
 
 ### Vigencia del plan mensual
 
-Consideramos que la suscripción tiene vigencia durante un mes desde la fecha de alta. Incluye 20 viajes durante ese período. Los viajes no utilizados no se acumulan para el siguiente período.
+Consideramos que la suscripción tiene vigencia durante un mes desde la fecha de inicio de la suscripción. Incluye 20 viajes durante ese período. Los viajes no utilizados no se acumulan para el siguiente período.
 
 
 ## Gestionar el estado de un vehículo
@@ -359,10 +368,12 @@ Existe un viaje registrado que requiere una corrección.
 
 1. El operador solicita registrar una nota de ajuste.
 2. El sistema solicita identificar el viaje.
-3. El operador selecciona el viaje e indica el motivo y el detalle de la corrección.
+3. El operador selecciona el viaje e indica el motivo y el detalle de la corrección. Si es económica, indica el importe que  corresponde acreditar o debitar.
 4. El sistema comprueba que el viaje esté cerrado y que la información esté completa.
-5. El sistema registra la nota de ajuste asociada al viaje, conservando los datos originales.
-6. El sistema informa que la nota se registró correctamente.
+5. El sistema registra la nota asociada al viaje, conservando los datos originales.
+6. Si existe una corrección económica, el sistema registra un movimiento compensatorio asociado a la nota, con su fecha e importe, y actualiza el saldo.
+7. El sistema actualiza la habilitación del usuario según el saldo resultante: lo inhabilita si queda negativo y elimina la inhabilitación por deuda si se regulariza.
+8. El sistema informa que la nota se registró correctamente.
 
 ### Flujos alternativos
 
@@ -442,3 +453,33 @@ Existen vehículos registrados en el sistema.
 ### Reporte de vehículos con más fallas
 
 Consideramos que el reporte utiliza todos los reportes de falla conservados y ordena los vehículos de mayor a menor cantidad de reportes registrados.
+
+## Comprobar vehículos no devueltos
+
+### Actor
+
+Operador del sistema.
+
+### Precondición
+
+El operador está registrado en el sistema.
+
+### Flujo principal
+
+1. El operador solicita comprobar los viajes abiertos.
+2. El sistema compara el momento actual con el inicio de cada viaje abierto.
+3. Si un vehículo lleva 24 horas o más sin devolverse, el sistema registra que fue reportado como perdido e impide que se ofrezca para nuevos retiros.
+4. El sistema aplica el cargo fijo de $50.000 a la cuenta del usuario y registra el movimiento con su fecha, importe y viaje asociado.
+5. El sistema registra que el cargo por pérdida ya fue aplicado, para evitar cobrarlo nuevamente en otra comprobación.
+6. Si el saldo resulta negativo, el sistema inhabilita al usuario hasta que lo regularice.
+7. El sistema muestra los vehículos reportados como perdidos.
+
+### Flujos alternativos
+
+- Si no existen viajes abiertos, el sistema informa que no hay viajes pendientes de devolución.
+- Si ningún viaje alcanza las 24 horas, el sistema informa que no se detectaron nuevos vehículos perdidos.
+- Si un viaje ya tiene registrado el cargo por pérdida, el sistema no vuelve a aplicarlo.
+
+### Aclaración
+
+Reportar el vehículo como perdido no equivale a registrar una devolución. No se inventan una estación de devolución ni un momento de fin del viaje.
