@@ -1,10 +1,8 @@
 # Análisis del enunciado
 
 ## Resumen del enunciado
-Un municipio ha implementado un servicio público de bicicletas comunes, eléctricas y monopatines eléctricos que se puede compartir,
-el cual funciona en estaciones fijas. 
-El sistema debe permitir registrar usuarios, gestionar su saldo y sus medios de pago, registrar cuando retiran el vehículo y cuando lo devuelven,
-guardar los datos del viaje y su recorrido, y calcular su importe según las tarifas y promociones correspondientes.
+Un municipio ha implementado un servicio público de bicicletas comunes, eléctricas y monopatines eléctricos que se pueden compartir, el cual funciona en estaciones fijas. 
+El sistema debe permitir registrar usuarios, gestionar su saldo y sus medios de pago, registrar cuándo retiran el vehículo y cuándo lo devuelven, guardar los datos del viaje y su recorrido y calcular su importe según las tarifas y promociones correspondientes.
 
 Además, el sistema debe gestionar el estado de los vehículos, permitir registrar reportes de fallas, gestionar las órdenes de mantenimiento y registrar la redistribución entre estaciones.
 El administrador podrá emitir reportes de viajes por usuario, uso por estación y vehículos con más fallas. 
@@ -65,7 +63,7 @@ El administrador podrá emitir reportes de viajes por usuario, uso por estación
 - Hay tres tipos: bicicleta común, bicicleta eléctrica y monopatín eléctrico. Los estados son disponible, en uso, en reparación, batería baja y fuera de servicio.
 - Solo un vehículo disponible puede retirarse. Los eléctricos con batería menor al 15% pasan a batería baja y no se ofrecen. Las bicicletas comunes no tienen batería.
 - Un vehículo con 3 reportes de falla en 30 días pasa a mantenimiento obligatorio.
-- Una orden de mantenimiento no se cierra sin registrar el técnico, la fecha y las tareas realizadas.
+- Una orden de mantenimiento no se cierra sin registrar al técnico, la fecha y las tareas realizadas.
 
  ### Estaciones
  - Cada estación tiene una capacidad fija, y no se puede devolver un vehículo en una estación llena ni fuera de una estación.
@@ -81,7 +79,7 @@ El administrador podrá emitir reportes de viajes por usuario, uso por estación
 
 ## Supuestos adoptados
 ### Registro y cierre de las órdenes de mantenimiento
-Consideramos que el técnico asignado a una orden es quien registra las tareas realizadas y los repuestos utilizados, y efectúa su cierre. Para cerrarla, debe quedar registrado el técnico, la fecha de cierre y las tareas realizadas.
+Consideramos que el técnico asignado a una orden es quien registra las tareas realizadas y los repuestos utilizados y efectúa su cierre. Para cerrarla, deben quedar registrados el técnico, la fecha de cierre y las tareas realizadas.
 
 ### Cobro de viajes con promociones
 Consideramos que las promociones del primer viaje y del plan mensual contienen el cargo de desbloqueo y los minutos gratuitos correspondientes: 15 minutos para el primer viaje y 30 minutos para cada uno de los 20 viajes incluidos en el plan mensual. 
@@ -101,3 +99,21 @@ Consideramos un cargo fijo de $50000 cuando el vehículo no se devuelve en 24 ho
 
 ### Saldo mínimo para retirar un vehículo
 Consideramos que el saldo mínimo debe cubrir el cargo de desbloqueo más 30 minutos de uso, según la tarifa vigente del tipo de vehículo que el usuario quiera retirar. 
+
+### Creación de la cuenta del usuario
+
+Consideramos que, al registrar un usuario, el sistema crea su cuenta con saldo inicial cero.
+
+### Tarifa aplicable al viaje
+
+Consideramos que cada viaje utiliza la tarifa vigente para su tipo de vehículo al momento del retiro. Esa tarifa se conserva para calcular el importe, aunque cambie durante el viaje.
+
+### Consumo de beneficios de las promociones
+
+Consideramos que los retiros cancelados sin cargo no consumen la promoción del primer viaje ni los viajes del plan mensual.
+
+La promoción del primer viaje corresponde al primer viaje finalizado que no haya sido cancelado.
+
+Se descuenta un viaje del plan mensual únicamente cuando se aplica ese beneficio al finalizar el viaje.
+
+Si la promoción del primer viaje y la del plan mensual producen el mismo importe, se aplica la del primer viaje, conservando los viajes disponibles del plan. 
