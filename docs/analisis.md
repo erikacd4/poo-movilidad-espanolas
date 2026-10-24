@@ -56,26 +56,26 @@ El administrador podrá emitir reportes de viajes por usuario, uso por estación
 ## Reglas de negocio
 
 ### Usuarios y saldo
-- Un usuario solo puede retirar un vehículo si su saldo alcanza el mínimo establecido (por ejemplo, el equivalente a 30 minutos de uso) y si no tiene otro viaje abierto.
-- Si al terminar un viaje el saldo queda negativo, el usuario queda inhabilitado hasta regularizarlo.
+- 1. Un usuario solo puede retirar un vehículo si su saldo alcanza el mínimo establecido (por ejemplo, el equivalente a 30 minutos de uso) y si no tiene otro viaje abierto.
+- 2.  Si al terminar un viaje el saldo queda negativo, el usuario queda inhabilitado hasta regularizarlo.
 
 ### Vehículos
-- Hay tres tipos: bicicleta común, bicicleta eléctrica y monopatín eléctrico. Los estados son disponible, en uso, en reparación, batería baja y fuera de servicio.
-- Solo un vehículo disponible puede retirarse. Los eléctricos con batería menor al 15% pasan a batería baja y no se ofrecen. Las bicicletas comunes no tienen batería.
-- Un vehículo con 3 reportes de falla en 30 días pasa a mantenimiento obligatorio.
-- Una orden de mantenimiento no se cierra sin registrar al técnico, la fecha y las tareas realizadas.
+- 3. Hay tres tipos: bicicleta común, bicicleta eléctrica y monopatín eléctrico. Los estados son: disponible, en uso, en reparación, batería baja y fuera de servicio.
+- 4. Solo un vehículo disponible puede retirarse. Los eléctricos con batería menor al 15% pasan a batería baja y no se ofrecen. Las bicicletas comunes no tienen batería.
+- 5. Un vehículo con 3 reportes de falla en 30 días pasa a mantenimiento obligatorio.
+- 6. Una orden de mantenimiento no se cierra sin registrar al técnico, la fecha y las tareas realizadas.
 
  ### Estaciones
- - Cada estación tiene una capacidad fija, y no se puede devolver un vehículo en una estación llena ni fuera de una estación.
- - Si el usuario encuentra la estación llena, dispone de 10 minutos adicionales sin cargo para llegar a otra cercana.
- - Una estación con menos del 20% o más del 90% de ocupación genera una alerta de redistribución para el operador.
+ - 7. Cada estación tiene una capacidad fija, y no se puede devolver un vehículo en una estación llena ni fuera de una estación.
+ - 8. Si el usuario encuentra la estación llena, dispone de 10 minutos adicionales sin cargo para llegar a otra cercana.
+ - 9. Una estación con menos del 20% o más del 90% de ocupación genera una alerta de redistribución para el operador.
 
 ### Viajes y tarifas
-- La tarifa es un cargo de desbloqueo más un precio por minuto según el tipo de vehículo. Valores de referencia: bicicleta común $200 + $20 por minuto, bicicleta eléctrica $300 + $45 por minuto, monopatín $300 + $50 por minuto.
-- Un retiro cancelado dentro de los 2 minutos no tiene cargo.
-- El tiempo máximo de un viaje es de 2 horas. Pasado ese límite, el minuto se cobra con un recargo del 50%. Si el vehículo no se devuelve en 24 horas, se lo reporta como perdido y se aplica un cargo fijo.
-- Promociones: el primer viaje de cada usuario es gratis hasta 15 minutos, y el plan mensual incluye 20 viajes de hasta 30 minutos. No se acumulan: se aplica la más favorable para el usuario.
-- Un viaje cerrado no se modifica. Cualquier corrección la hace el operador con una nota de ajuste. 
+- 10. La tarifa es un cargo de desbloqueo más un precio por minuto según el tipo de vehículo. Valores de referencia: bicicleta común $200 + $20 por minuto, bicicleta eléctrica $300 + $45 por minuto, monopatín $300 + $50 por minuto.
+- 11. Un retiro cancelado dentro de los 2 minutos no tiene cargo.
+- 12. El tiempo máximo de un viaje es de 2 horas. Pasado ese límite, el minuto se cobra con un recargo del 50%. Si el vehículo no se devuelve en 24 horas, se lo reporta como perdido y se aplica un cargo fijo.
+- 13. Promociones: el primer viaje de cada usuario es gratis hasta 15 minutos, y el plan mensual incluye 20 viajes de hasta 30 minutos. No se acumulan: se aplica la más favorable para el usuario.
+- 14. Un viaje cerrado no se modifica. Cualquier corrección la hace el operador con una nota de ajuste. 
 
 ## Supuestos adoptados
 ### Registro y cierre de las órdenes de mantenimiento
