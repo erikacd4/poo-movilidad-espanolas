@@ -28,9 +28,48 @@ Se todo es correcto, se crea el viaje con el usuario, vehículo, la estación, e
 
 ### Relación con el diagrama de clases 
 
-
+En ambos intervienen las clases "Cuenta", "Vehículo", "Estación" y "Viaje". 
 
 ## Devolver un vehículo 
+
+### Que muestra
+
+Este diagrama de secuencias muestra el flujo de la devolución de un vehículo. 
+
+El usuario solicita devolver el vhíiculo en una estación y el sistema compuebra que tenga la capacidad para ello (tieneCapacidad), si la tiene, finaliza el viaje registrando la estación el que se devuelve y la distancia recorrida (finalizar) y calcula el importe (calcularImporte), que corresponde al caso de uso incluido Calcular importe del viaje. 
+
+Una vez hecho esto, se descuenta el importe de la cuenta (debitar), que registra el movimiento, y el vehículo se agrega a la estación (agregarVehículo), y el viaje queda cerrado. Si aplicó el mes mensual, se descuenta uno de sus viajes (consumirViaje), y si es el primer viaje finalizado y no cancelado se registra que ya se realizó. 
+
+El estado del vehículo cambia según su condición (cambiarEstado) y se calcula la ocupación de la estación (calcularOcupación), con alerta si es menor del 20% o mayor del 90%. Lo último es que se informa la finalización del viaje, importe y saldo resultante. 
+
+### Flujo alternativo 
+
+Si la estación en la que se devuelve el vehículo esta llena, el sistema no completa la devolución ni cierra el viaje. En el primer intento rechazado por este motivo se registra el inicio del periodo adicional de hasta 10 minutos sin cargo, y se informa al usuario de que debe dirigirse a otra estacion y solicitar de nuevo la devolución. 
+
+
+### Fragmentos utilizados
+
+- alt: la estacion tiene capacidad o está llena
+- opt: inhabilitar al usuario si saldo negativo después del cobro
+- opt: descontar un viaje si se aplicó el plan mensual
+- opt: registrar el primer viaje realizado
+- opt: alerta segun la ocupación
+- opt: registrar el inicio de periodo adicional solo en el primer intento rechazado.
+
+### Relación con el diagrama de clases
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
