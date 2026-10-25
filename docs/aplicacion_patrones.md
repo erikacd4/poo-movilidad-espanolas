@@ -29,14 +29,17 @@ Los principios de Grasp elegidos:
 
 ### Sustitución de Liskov
 
-
+- Problema detectado: Si una subclase cambiara el significado de un método heredado, el código que usa Vehiculo dejaría de funcionar al recibir esa subclase.
+- Decisión tomada: Las tres subclases pueden usarse en cualquier lugar donde se espera un Vehiculo. Puederetirarse() siempre devuelve un booleano con el mismo significado. Las eléctricas añaden la comprobación de batería sin eliminar las comprobaciones de la clase base.
+- Clases: Vehiculo, BicicletaComun, BicicletaElectrica, MonopatinElectrico, Estacion y Traslado.
+- Ventaja: Estacion, Traslado y Sistema tratan igual a cualquier vehiculo, sin comprobar su tipo. 
 
 ## Grasp 
 
 ### Experto 
 
 - Problema detectado: Si Sistema calculará por sí mismo la ocupación, el saldo suficiente o importe, tendría que conocer los datos internos de las demás clases.
-- Decisión tomada:
+- Decisión tomada: Cada tarea la hace la clase que tiene los datos necesarios. Estacion calcula su ocupación y su capacidad (tieneCapacidad, calcularOcupacion) porque conoce su capacidad máxima y sus vehículos cuenta comprueba el saldo mínimo. Viaje calcula su importe porque conoce su inicio, fin y su tarifa y su promoción. Suscripcion sabe si está vigente y descuenta viajes. 
 - Clases:Estacion, Cuenta, Viaje y Suscripción.
 - Ventajas: cada dato se trata donde está y se ve en los diagramas de secuencia, donde sistema solo pregunta y cada objeto responde
 
