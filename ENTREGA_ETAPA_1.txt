@@ -1,0 +1,6 @@
+TP Integrador de Programación Orientada a Objetos - Etapa 1
+Propuesta C: Sistema de movilidad compartida
+Integrantes: Érika Concha y Sofía Fontán
+Repositorio: https://github.com/erikacd4/poo-movilidad-espanolas
+
+
