@@ -1,14 +1,14 @@
 # Documentación del trabajo
 
-Propuesta C: Sistema de movilidad compartida
+Propuesta C: Sistema de movilidad compartida.
+Integrantes: Érika Concha y Sofía Fontán.
 
-Integrantes: Érika Concha y Sofía Fontán
+## Etapa 1
 
-## Etapa 1: Modelado y aplicación de patrones
-
-- Análisis del enunciado: actores, requerimientos funcionales, reglas de negocio y supuestos.
-- Diagrama de casos de uso y descripciones textuales
-- Diagrama de clases inicial.
-- Dos diagramas de secuencia
-- APlicación de patrones: justificar tres principios SOLID y cuatro patrones GRASP
-- Diagrama de clases final
+1. [Documento completo de diseño (PDF)](Diseno_Etapa_1.pdf).
+2. [Análisis del enunciado](analisis.md): actores, requisitos, reglas y supuestos.
+3. [Casos de uso](casos_de_uso.md).
+4. [Diagramas UML y archivos fuente](uml/README.md).
+5. [Explicación de secuencias](diagramas_secuencia.md).
+6. [Aplicación de principios y patrones](aplicacion_patrones.md).
+7. [Justificación de cambios](cambios_diseno.md).

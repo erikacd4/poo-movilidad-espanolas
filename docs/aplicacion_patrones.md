@@ -1,65 +1,58 @@
-# Aplicación de patrones 
+# Aplicación de principios y patrones
 
-Los principios de Solid elegidos: 
-- Responsabilidad única
-- Abierto/Cerrado
-- Sustitución de Liskov
+Seleccionamos tres principios SOLID: responsabilidad única, abierto/cerrado y sustitución de Liskov. Los cuatro patrones GRASP son Experto, Creador, Controlador y Polimorfismo.
 
-Los principios de Grasp elegidos:
-- Experto
-- Creador
-- Controlador
-- Polimorfismo
+La revisión parte del diagrama inicial. Algunas separaciones y la jerarquía de vehículos ya estaban presentes: se mantienen y se justifican. Las incorporaciones y precisiones finales se detallan en [Cambios del diseño](cambios_diseno.md).
 
-## Solid 
+## Principios SOLID
 
-### Responsabilidad única 
+### Responsabilidad única
 
-- Problema detectado: si Usuario guarda además de un saldo, los movimientos, medios de pago y suscripción, y si viaje tuviese las reglas de tarifas y promociones, cada clase cambiaría por motivos muy distintos. Cambiar una promoción obligaría a cambiar el viaje.
-- Decisión tomada: repartir las responsabilidades entre clases. Usuario guarda sus datos personales y su habilitación. Cuenta gestionaa el saldo y los movimientos (recargar, debitar, registrarAjuste). MedioPago y Suscripción son clases propias. Tarifa guarda el cargo de desbloqueo y el precio por minuto, Promoción decide si se aplica (esAplicable) y cuanto cuesta el viaje con ella (calcularImporte), y NotaAjuste registra las correcciones sin modificar el viaje cerrado.
-- Clases: Usuario, Cuenta, Movimiento, MedioPago, Suscripción, Trifa, Promoción, Viaje, NotaAjuste. 
-- Ventaja: Cambio en una regla afecta solo a su clase, las clases son más pequeñas y más fáciles de probar con pruebas unitarias.
+- Problema detectado: el cálculo del viaje y la gestión del saldo requieren colaborar, pero no deben concentrarse en una sola clase ni trasladarse a la interfaz. Una corrección económica tampoco debe modificar un viaje cerrado.
+- Decisión tomada: conservar la separación inicial. Cuenta gestiona saldo y movimientos mediante recargar, debitar y registrarAjuste. Viaje reúne los datos del viaje y coordina su cálculo; Tarifa conserva los precios y Promocion evalúa su aplicación e importe. NotaAjuste conserva la corrección separada del viaje. En el diseño final, Sistema coordina las peticiones sin asumir esas responsabilidades del dominio.
+- Clases: Usuario, Cuenta, Movimiento, Viaje, Tarifa, Promocion, NotaAjuste y Sistema.
+- Ventaja: cada cambio se concentra en su responsabilidad y las reglas pueden comprobarse por separado.
 
 ### Abierto/cerrado
 
-- Problema detectado: los vehículos se comportan distinto según su tipo. Si Sistema o Estación deciden con condicionales según el tipo, añadir un tipo nuevo obligaría a modificar esos condiconales.
-- Decisión tomada: Vehículo es una clase abstracta con el método puedeRetirarse(). Cada subclase aporta su propia comprobación, el resto del sistema trabaja siempre con Vehiculo, sin preguntar de que tipo es.
-- Clases: Vehiculo, BicicletaComun, BicicletaElectrica, MonopatinElectrico, y las que lo usan: Estacion, Traslado y Sistema
-- Ventaja: Se puede añadir un tipo nuevo de vehículo creando una subclase sin modificar las clases que ya funcionan.
+- Problema detectado: repetir en los clientes las condiciones de retiro según el tipo concreto de vehículo obligaría a modificar esas comprobaciones cada vez que cambie una variante.
+- Decisión tomada: conservar la jerarquía de Vehiculo y puedeRetirarse(). Las variantes eléctricas sobrescriben la operación e incorporan la regla de batería. En el diseño final también se sobrescribe actualizarEstadoTrasDevolucion() donde cambia ese comportamiento.
+- Clases: Vehiculo, BicicletaComun, BicicletaElectrica, MonopatinElectrico y Sistema.
+- Ventaja: los clientes mantienen la misma llamada para esas variaciones. Esta ventaja se limita a esos comportamientos: agregar otro tipo también puede requerir actualizar tarifas y tipos registrados.
 
 ### Sustitución de Liskov
 
-- Problema detectado: Si una subclase cambiara el significado de un método heredado, el código que usa Vehiculo dejaría de funcionar al recibir esa subclase.
-- Decisión tomada: Las tres subclases pueden usarse en cualquier lugar donde se espera un Vehiculo. Puederetirarse() siempre devuelve un booleano con el mismo significado. Las eléctricas añaden la comprobación de batería sin eliminar las comprobaciones de la clase base.
-- Clases: Vehiculo, BicicletaComun, BicicletaElectrica, MonopatinElectrico, Estacion y Traslado.
-- Ventaja: Estacion, Traslado y Sistema tratan igual a cualquier vehiculo, sin comprobar su tipo. 
+- Problema detectado: compartir una firma no garantiza una sustitución correcta. Una subclase que permita retirar un vehículo no disponible rompería las reglas comunes.
+- Decisión tomada: precisar el contrato de puedeRetirarse() para toda la jerarquía. Devuelve si el vehículo cumple las condiciones de retiro, sin iniciar un viaje ni retirarlo de la estación. Todas las variantes respetan disponibilidad, ausencia de mantenimiento obligatorio pendiente y ausencia de pérdida registrada. Las eléctricas también respetan la regla de batería. El resultado falso es una respuesta normal: el cliente no tiene que conocer la subclase antes de consultar.
+- Clases: Vehiculo, sus tres subclases y los clientes que utilizan Vehiculo.
+- Ventaja: Sistema consulta cualquier vehículo mediante la misma operación y trata el resultado con el mismo flujo. En la implementación deberá verificarse este contrato; devolver un booleano no basta por sí solo.
 
-## Grasp 
+## Patrones GRASP
 
-### Experto 
+### Experto
 
-- Problema detectado: Si Sistema calculará por sí mismo la ocupación, el saldo suficiente o importe, tendría que conocer los datos internos de las demás clases.
-- Decisión tomada: Cada tarea la hace la clase que tiene los datos necesarios. Estacion calcula su ocupación y su capacidad (tieneCapacidad, calcularOcupacion) porque conoce su capacidad máxima y sus vehículos cuenta comprueba el saldo mínimo. Viaje calcula su importe porque conoce su inicio, fin y su tarifa y su promoción. Suscripcion sabe si está vigente y descuenta viajes. 
-- Clases:Estacion, Cuenta, Viaje y Suscripción.
-- Ventajas: cada dato se trata donde está y se ve en los diagramas de secuencia, donde sistema solo pregunta y cada objeto responde
+- Problema detectado: si Sistema calculara la ocupación, el saldo suficiente y el importe, necesitaría conocer los datos internos de muchas clases.
+- Decisión tomada: Estacion ofrece tieneCapacidad() y calcularOcupacion(); Cuenta compara el saldo con alcanzaSaldoMinimo(minimo). Tarifa incorpora calcularSaldoMinimo() porque conoce los precios para aplicar el supuesto de desbloqueo más 30 minutos. Viaje calcula su importe con su duración, tarifa y promoción. Suscripcion consulta su vigencia y descuenta los viajes utilizados.
+- Clases: Estacion, Cuenta, Tarifa, Viaje, Promocion y Suscripcion.
+- Ventaja: las secuencias muestran mensajes a los objetos responsables en lugar de cálculos del controlador sobre datos ajenos.
 
 ### Creador
 
-- Problema detectado: Si cualquier clase pudiera crear cualquier objeto, el conocimiento sobre como se construyen quedaría repartido y habría dependencias innecesarias. 
-- Solución tomada: Crear un objeto que la clase lo contiene, lo registra o tiene los datos para inicializarlo, Cuenta crea sus Movimiento al recargar, o controlar un ajuste. Viaje crea sus PuntoRecorrido en registrarPunto. En retirar un vehículo Sistema crea su viaje, porque reúne el usuario, vehículo, tarida y estación. 
-- Clases: Cuenta, Movimiento, Viaje, PuntoRecorrido, Sistema
-- Ventaja: Los objetos se crean ya relacionados con su contenedor, un movimiento no existe sin su cuenta ni un punto sin su viaje, lo que coincide con las composiciones del diagrama de clases.
+- Problema detectado: crear objetos desde clases que no tienen sus datos iniciales produciría objetos incompletos y dependencias innecesarias.
+- Decisión tomada: Cuenta crea sus Movimiento al registrar recargas, débitos y ajustes. Viaje crea sus PuntoRecorrido en registrarPunto. Sistema crea el nuevo Viaje después de validar el retiro, porque reúne usuario, vehículo, estación de origen, inicio y tarifa.
+- Clases: Cuenta, Movimiento, Viaje, PuntoRecorrido y Sistema.
+- Ventaja: los objetos se crean con sus datos y relaciones. Esto es coherente con las composiciones cuenta-movimientos y viaje-puntos.
 
 ### Controlador
 
-- Problema detectado: sin una clase que recibe las peticiones, la interfaz tendría que conocer y coordinar directamente muchas clases de dominio, mezclando interfaz y lógica. 
-- Decisión tomada:Sistema representa al sistema completo. Recibe las peticiones del usuario y las delega en los objetos del domino, sin contener la lógica, aparece en los diagramas de secuencia.
-- Clase: Sistema
-- Ventaja: La interfaz solo habla con Ssitema, así que se puede cambiar de consola a interfaz gráfica sin tocar el dominio.
+- Problema detectado: el diagrama inicial no explicitaba qué objeto recibe una solicitud de retiro o devolución y ordena la colaboración.
+- Decisión tomada: incorporar Sistema como controlador. Recibe retirarVehiculo(...) y devolverVehiculo(...), consulta los objetos del dominio y coordina los cambios. No sustituye a Viaje en el cálculo del importe ni a Cuenta en el saldo. Sus relaciones de uso puntual se representan como dependencias.
+- Clases: Sistema y los objetos a los que delega.
+- Ventaja: la coordinación queda identificada y la interfaz no tiene que dirigir todos los pasos.
 
-### Polimorfismo 
+### Polimorfismo
 
-- Problema detectado: El comportamiento varia según el tipo (comprobar la batería) se resolvería con condicionales sobre el tipo de vehículo. 
-- Decisión tomada: puedeRetirarse() se declara en vehículo y se sobreescribe en BicicletaElectrica y MonopatinElectrico. Sistema lo invoca igual para cualquier vehículo, como se ve en el diagrama de secuencia. 
-- Clases: Vehiculo, BicicletaElectrica, MonopatinElectrica
-- Ventaja: Sería que desaparecen los condicionales por tipo, y cada subclase se ocupa de su propia regla. 
+- Problema detectado: las condiciones de batería afectan a los vehículos eléctricos y no a las bicicletas comunes. Distribuir esa diferencia en los clientes repetiría la lógica.
+- Decisión tomada: Sistema invoca puedeRetirarse() sobre una referencia Vehiculo. BicicletaElectrica y MonopatinElectrico sobrescriben la operación conservando las condiciones comunes. actualizarEstadoTrasDevolucion() sigue el mismo criterio para las variaciones del estado tras la devolución.
+- Clases: Vehiculo, BicicletaComun, BicicletaElectrica, MonopatinElectrico y Sistema.
+- Ventaja: las variaciones se resuelven en el vehículo concreto y el controlador utiliza la operación común.

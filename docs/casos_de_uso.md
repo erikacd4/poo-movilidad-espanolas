@@ -83,7 +83,7 @@ El usuario tiene un viaje abierto con el vehículo que desea devolver.
 5. El sistema descuenta el importe de la cuenta del usuario y registra el movimiento con su fecha e importe.
 6. El sistema cierra el viaje y registra el vehículo en la estación.
 7. El sistema registra el beneficio utilizado. Si aplicó el plan mensual, descuenta uno de los viajes disponibles. Si es el primer viaje finalizado no cancelado, registra que ese primer viaje ya se realizó.
-8. El sistema actualiza el estado del vehículo según su condición. Si es eléctrico y su batería es menor al 15%, queda en batería baja. Si tiene mantenimiento obligatorio pendiente, no queda disponible para nuevos retiros.
+8. El sistema suma la distancia del viaje a los kilómetros recorridos del vehículo y actualiza su estado según su condición. Si es eléctrico y su batería es menor al 15%, queda en batería baja. Si tiene mantenimiento obligatorio pendiente, no queda disponible para nuevos retiros.
 9. El sistema actualiza la ocupación de la estación. Si es menor al 20% o mayor al 90%, genera una alerta de redistribución para el operador.
 10. El sistema informa la finalización del viaje, el importe y el saldo resultante.
 
@@ -215,7 +215,7 @@ La persona que presenta el reporte está registrada como usuario o como operador
 4. El sistema comprueba que el vehículo exista y que la descripción esté completa.
 5. El sistema registra el reporte asociado al vehículo, con su descripción y fecha.
 6. El sistema consulta los reportes del vehículo registrados en los últimos 30 días y distingue cuáles fueron atendidos.
-7. Si existen al menos 3 reportes pendientes de atención en ese período, el sistema registra la obligación de mantenimiento. Si esa obligación ya estaba pendiente, la mantiene hasta que se registre su resolución. Mientras esté pendiente, impide nuevos retiros.
+7. Si se alcanza el umbral de 3 reportes registrados en 30 días, el sistema registra la obligación de mantenimiento, contemplando las resoluciones de mantenimiento ya registradas para no reactivar una obligación atendida únicamente por los mismos reportes históricos. Si esa obligación ya estaba pendiente, la mantiene hasta que se registre su resolución. Mientras esté pendiente, impide nuevos retiros.
 8. El sistema informa que el reporte se registró correctamente.
 
 ### Flujos alternativos
@@ -322,7 +322,7 @@ El usuario está registrado en el servicio.
 1. El usuario solicita suscribirse al plan mensual.
 2. El sistema muestra las condiciones del plan: incluye 20 viajes de hasta 30 minutos y sus beneficios no se acumulan con otras promociones.
 3. El usuario confirma la suscripción.
-4. El sistema registra la suscripción del usuario  con sus fechas de inicio y fin de vigencia, e inicializa la cantidad de viajes incluidos en 20.
+4. El sistema registra la suscripción del usuario con sus fechas de inicio y fin de vigencia, e inicializa la cantidad de viajes incluidos en 20.
 5. El sistema informa que la suscripción se registró correctamente.
 
 ### Flujos alternativos
@@ -383,7 +383,7 @@ Existe un viaje registrado que requiere una corrección.
 
 1. El operador solicita registrar una nota de ajuste.
 2. El sistema solicita identificar el viaje.
-3. El operador selecciona el viaje e indica el motivo y el detalle de la corrección. Si es económica, indica el importe que  corresponde acreditar o debitar.
+3. El operador selecciona el viaje e indica el motivo y el detalle de la corrección. Si es económica, indica el importe que corresponde acreditar o debitar.
 4. El sistema comprueba que el viaje esté cerrado y que la información esté completa.
 5. El sistema registra la nota asociada al viaje, conservando los datos originales.
 6. Si existe una corrección económica, el sistema registra un movimiento compensatorio asociado a la nota, con su fecha e importe, y actualiza el saldo.
@@ -484,7 +484,7 @@ El operador está registrado en el sistema.
 1. El operador solicita comprobar los viajes abiertos.
 2. El sistema compara el momento actual con el inicio de cada viaje abierto.
 3. Para cada viaje que alcanza las 24 horas sin devolución, el sistema registra el vehículo como reportado perdido e impide que se ofrezca para nuevos retiros.
-4. Si ese viaje todavía no tiene aplicado el cargo por pérdida,el sistema debita $50.000 de la cuenta del usuario y registra el movimiento con su fecha, importe y viaje asociado.
+4. Si ese viaje todavía no tiene aplicado el cargo por pérdida, el sistema debita $50.000 de la cuenta del usuario y registra el movimiento con su fecha, importe y viaje asociado.
 5. El sistema registra que el cargo por pérdida fue aplicado, para evitar repetirlo en otras comprobaciones.
 6. Si se aplicó el cargo y el saldo resulta negativo, el sistema inhabilita al usuario hasta que lo regularice.
 7. El sistema muestra los vehículos reportados como perdidos.
