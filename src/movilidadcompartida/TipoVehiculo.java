@@ -1,0 +1,1 @@
+package movilidadcompartida; public enum TipoVehiculo { BICICLETA, BICICLETA_ELECTRICA, MONOPATIN_ELECTRICO }

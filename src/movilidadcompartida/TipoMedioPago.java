@@ -1,0 +1,1 @@
+package movilidadcompartida; public enum TipoMedioPago { TARJETA, BILLETERA_VIRTUAL }

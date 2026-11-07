@@ -1,0 +1,1 @@
+package movilidadcompartida; public enum TipoPromocion { PRIMER_VIAJE, PLAN_MENSUAL }

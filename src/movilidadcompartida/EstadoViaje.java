@@ -1,0 +1,1 @@
+package movilidadcompartida; public enum EstadoViaje { ABIERTO, CERRADO, CANCELADO }
