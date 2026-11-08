@@ -1,6 +1,8 @@
 # Sistema de movilidad compartida
 
 TP Integrador de Programación Orientada a Objetos. Propuesta C: bicicletas comunes, bicicletas eléctricas y monopatines eléctricos en estaciones fijas.
+El sistema gestiona bicicletas y monopatines eléctricos en estaciones. Permite registrar usuarios, cargar saldo, retirar y devolver vehículos, gestionar fallas y emitir reportes. Los datos se guardan en movilidad.dat.
+
 
 Integrantes: Érika Concha y Sofía Fontán. Grupo: Españolas.
 
@@ -12,6 +14,9 @@ Integrantes: Érika Concha y Sofía Fontán. Grupo: Españolas.
 - [Explicación de las dos secuencias](docs/diagramas_secuencia.md).
 - [Aplicación de 3 SOLID y 4 GRASP](docs/aplicacion_patrones.md).
 - [Cambios del diseño inicial al final](docs/cambios_diseno.md).
+- [Plan de pruebas y resultados](docs/plan_pruebas.pdf)
+- [Informe final](docs/INFORMEFINAL.pdf)
+  
 
 
 
